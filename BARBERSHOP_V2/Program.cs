@@ -13,6 +13,7 @@ using BARBERSHOP_V2.Service.ExceptionService;
 using BARBERSHOP_V2.Repository.ExceptionRepo;
 using BARBERSHOP_V2.Service;
 using BARBERSHOP_V2.Service.EmailService;
+using BARBERSHOP_V2.Service.Validator;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -125,6 +126,7 @@ builder.Services.AddScoped<IUniqueConstraintHandler, UniqueConstraintService>();
 builder.Services.AddScoped<EndTimeForBookingService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<UnitOfWork>();
+builder.Services.AddScoped<PasswordValidator>();
 
 #endregion
 

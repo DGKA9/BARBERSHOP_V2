@@ -97,6 +97,11 @@ namespace BARBERSHOP_V2.Controllers
             var productes = _unitOfWork.ProductRepository.Search<ProductDto>(product =>
                             product.proName != null &&
                             product.proName.Contains(productkey));
+            if (!productes.Any())
+            {
+                return StatusCode(StatusCodes.Status404NotFound,
+                    new { Message = $"Không có sản phẩm chứa từ khoá {productkey.ToUpper()} " });
+            }
             return Ok(productes);
         }
     }
