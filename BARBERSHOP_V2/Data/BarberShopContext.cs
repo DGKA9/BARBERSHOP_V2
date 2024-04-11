@@ -63,8 +63,6 @@ namespace BARBERSHOP_V2.Data
                 .IsRequired();
             modelBuilder.Entity<Booking>()
                 .HasCheckConstraint("CK_Booking_StartDate_DateFounded", "startDate >= dateFounded");
-            modelBuilder.Entity<Booking>()
-                .HasCheckConstraint("CK_Booking_StartDate_CurrentDate", "startDate <= GETDATE()");
 
             modelBuilder.Entity<Booking>()
                 .Property(b => b.startTime)
