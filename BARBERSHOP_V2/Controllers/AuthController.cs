@@ -66,6 +66,16 @@ namespace BARBERSHOP_V2.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserDto request)
         {
+            if (string.IsNullOrEmpty(request.userName))
+            {
+                return BadRequest("Username is required.");
+            }
+
+            if (string.IsNullOrEmpty(request.password))
+            {
+                return BadRequest("Password is required.");
+            }
+
             var user = await _context.Users!.FirstOrDefaultAsync(u => u.userName == request.userName);
 
             if (user == null)
@@ -73,7 +83,7 @@ namespace BARBERSHOP_V2.Controllers
                 return BadRequest("User not found.");
             }
 
-            if (!JWT.VerifyPasswordHash(request.password!, user.PasswordHash!, user.PasswordSalt!))
+            if (!JWT.VerifyPasswordHash(request.password, user.PasswordHash, user.PasswordSalt))
             {
                 return BadRequest("Wrong password.");
             }
@@ -88,6 +98,7 @@ namespace BARBERSHOP_V2.Controllers
 
             return Ok(authResponse);
         }
+
 
     }
 }
