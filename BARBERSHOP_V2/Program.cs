@@ -69,7 +69,7 @@ builder.Services.AddDbContext<BarberShopContext>(options => {
 
 builder.Services.AddCors(p => p.AddPolicy("BarberShop", build =>
 {
-    //build.WithOrigins("https://khoahoc.info", "https://localhost:7224", "http://localhost:3003/");
+    //build.WithOrigins("https://khoahoc.info", "https://localhost:7224", "http://localhost:3000/");
     build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 
