@@ -29,10 +29,6 @@ namespace BARBERSHOP_V2.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDto request)
         {
-            if (!_passwordValidator.IsStrongPassword(request.password))
-            {
-                return BadRequest("Mật khẩu phải ít nhất 8 ký tự bao gồm chữ hoa, chữ thường, chữ số và ký tự đặc biệt.");
-            }
 
             if (_context.Users != null)
             {
@@ -42,6 +38,11 @@ namespace BARBERSHOP_V2.Controllers
                 {
                     return BadRequest("User already exists.");
                 }
+            }
+
+            if (!_passwordValidator.IsStrongPassword(request.password))
+            {
+                return BadRequest("Mật khẩu phải ít nhất 8 ký tự bao gồm chữ hoa, chữ thường, chữ số và ký tự đặc biệt.");
             }
 
             JWT.CreatePasswordHash(request.password!, out byte[] passwordHash, out byte[] passwordSalt);

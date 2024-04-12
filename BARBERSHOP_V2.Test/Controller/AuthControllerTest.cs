@@ -25,21 +25,22 @@ namespace BARBERSHOP_V2.Test.Controller
     {
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private DbContextOptions<BarberShopContext> _options;
 
         public AuthControllerTest()
         {
             _configuration = A.Fake<IConfiguration>();
             _mapper = A.Fake<IMapper>();
+            _options = new DbContextOptionsBuilder<BarberShopContext>()
+                .UseInMemoryDatabase(databaseName: "barberShopv2")
+                .Options;
         }
 
         [Fact]
         public async Task Register_ExistingUserName_ReturnsBadRequest()
         {
-            var options = new DbContextOptionsBuilder<BarberShopContext>()
-                .UseInMemoryDatabase(databaseName: "barberShopv2")
-                .Options;
 
-            using (var context = new BarberShopContext(options))
+            using (var context = new BarberShopContext(_options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -56,7 +57,7 @@ namespace BARBERSHOP_V2.Test.Controller
 
                 var controller = new AuthController(context, _configuration, unitOfWork, mockUniqueConstraintHandler, mockPasswordValidator);
 
-                var result = await controller.Register(new UserDto { userName = "dangkhoaooo", password = "Abc123", roleID = 1 });
+                var result = await controller.Register(new UserDto { userName = "dangkhoaooo", password = "Abcd@1234", roleID = 1 });
 
                 var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
                 Assert.Equal("User already exists.", badRequestResult.Value);
@@ -66,18 +67,14 @@ namespace BARBERSHOP_V2.Test.Controller
         [Fact]
         public async Task Register_NullUserName_ReturnsBadRequest()
         {
-            var options = new DbContextOptionsBuilder<BarberShopContext>()
-                .UseInMemoryDatabase(databaseName: "barberShopv2_NullUserName")
-                .Options;
-
-            using (var context = new BarberShopContext(options))
+            using (var context = new BarberShopContext(_options))
             {
                 var mockUniqueConstraintHandler = A.Fake<IUniqueConstraintHandler>();
                 var mockPasswordValidator = A.Fake<PasswordValidator>();
                 var unitOfWork = new UnitOfWork(context, _mapper);
                 var controller = new AuthController(context, _configuration, unitOfWork, mockUniqueConstraintHandler, mockPasswordValidator);
 
-                var result = await controller.Register(new UserDto { userName = null, password = "Abc123", roleID = 1 });
+                var result = await controller.Register(new UserDto { userName = null, password = "Abcd@1234", roleID = 1 });
 
                 var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
                 Assert.Equal("Username is required.", badRequestResult.Value);
@@ -87,11 +84,7 @@ namespace BARBERSHOP_V2.Test.Controller
         [Fact]
         public async Task Register_NullPassword_ReturnsBadRequest()
         {
-            var options = new DbContextOptionsBuilder<BarberShopContext>()
-                .UseInMemoryDatabase(databaseName: "barberShopv2_NullPassword")
-                .Options;
-
-            using (var context = new BarberShopContext(options))
+            using (var context = new BarberShopContext(_options))
             {
                 var mockUniqueConstraintHandler = A.Fake<IUniqueConstraintHandler>();
                 var mockPasswordValidator = A.Fake<PasswordValidator>();
